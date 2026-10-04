@@ -6,8 +6,8 @@ Interaktive Fall-Demo zur **Mehrhafen-Stauplanung** einer Reederei: ein Containe
 beim Löschen muss er kurz umgesetzt werden (**Restow**), ein unproduktiver Kranhub extra. Die Demo beantwortet: **Wie viele Stapelplätze (Breite × Höhe) braucht eine Bucht, damit über die ganze Route
 garantiert kein Restow entsteht – und was kostet es, knapp darunter zu bleiben?**
 
-Teil des Portfolios für die Website „Sebastian Hanisch – Operations Research und Machine Learning", **Welle 2 der Seefracht-Linie** (Schwesterlinie zur Hafen-Linie), Nachfolger von `stauplanung-demo`
-(Hafen-Linie): dort eine Bucht für **einen** Hafen mit **geschätzter** Abfahrt, hier eine Bucht für die **ganze Route** mit mehreren Anlaufhäfen, bei der jedes Ziel von Anfang an **exakt bekannt** ist.
+Teil des Portfolios für die Website „Sebastian Hanisch – Operations Research und Machine Learning", **Welle 2 der Seefracht-Linie** (Schwesterlinie zur Hafen-Linie), Nachfolger von `stapelplanung-demo`
+(Hafen-Linie): dort ein Stapelblock für **einen** Hafen mit **geschätzter** Abfahrt, hier eine Bucht für die **ganze Route** mit mehreren Anlaufhäfen, bei der jedes Ziel von Anfang an **exakt bekannt** ist.
 Vehikel: eine Bucht (W Stapel, Höhe H) auf einer Route mit fester Hafenreihenfolge.
 
 ## Warum dieses Problem
@@ -144,3 +144,5 @@ Tests: `python -m pytest tests/ -v`. Preset-Abstimmung: `python tools/tune_prese
 ---
 
 Gebaut mit Streamlit, Plotly und fpdf2.
+
+Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). Mehr zum Thema: [Seefracht optimieren](https://sebastianhanisch.net/seefracht-optimierung.html).

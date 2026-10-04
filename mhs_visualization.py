@@ -83,7 +83,7 @@ def height_curve_figure(h_curve, current_h):
                                  marker=dict(size=13, color=C.CURRENT_W_COLOR, line=dict(width=2, color="white")),
                                  name="eingestellt", hovertemplate="eingestellt: H=%{x}<br>%{y:.2f}<extra></extra>"))
     fig.update_layout(template="plotly_white", height=C.CHART_HEIGHT, margin=dict(t=25, b=45), showlegend=False,
-                      xaxis_title="Bucht-Hoehe H", yaxis_title="Mittlere noetige Stapelzahl")
+                      xaxis_title="Bucht-Höhe H", yaxis_title="Mittlere nötige Stapelzahl")
     fig.update_xaxes(tickmode="array", tickvals=hs)
     fig.update_yaxes(rangemode="tozero")
     return _lock_axes(fig)

@@ -21,9 +21,9 @@ def render_metrics(columns, restows_sortiert, restows_blind, gap, zero_share_val
     """Vier Kennzahlen (Plan Abschnitt 6): Restows (sortiert), Restows (blind), Abstand zum
     Mindestbedarf (eingestelltes W minus exaktes Minimum), Nullquote (Stichprobe, Regel sortiert)."""
     m = columns
-    m[0].metric("Restows (sortiert)", fmt_restows(restows_sortiert), help="Restows der zielhafen-sortierten Regel auf der gezeigten Route bei der eingestellten Bucht-Groesse.")
+    m[0].metric("Restows (sortiert)", fmt_restows(restows_sortiert), help="Restows der zielhafen-sortierten Regel auf der gezeigten Route bei der eingestellten Bucht-Größe.")
     m[1].metric("Restows (blind)", fmt_restows(restows_blind), help="Restows der blinden Regel (Kontrast-Baseline) auf derselben Route.")
-    m[2].metric("Abstand zum Mindestbedarf", fmt_gap(gap), help="Eingestelltes W minus exaktes Minimum W* (Regel sortiert) bei dieser Hoehe/Route; negativ = zu knapp, 0 = genau am Limit.")
+    m[2].metric("Abstand zum Mindestbedarf", fmt_gap(gap), help="Eingestelltes W minus exaktes Minimum W* (Regel sortiert) bei dieser Höhe/Route; negativ = zu knapp, 0 = genau am Limit.")
     zero_txt = "–" if zero_share_value is None else f"{zero_share_value * 100:.1f} %"
     m[3].metric("Nullquote (Stichprobe)", zero_txt, help=f"Anteil restow-freier Routen (Regel sortiert) unter {C.SAMPLE_INSTANCES} Stichprobenrouten mit denselben Einstellungen (nicht der gezeigte Seed).")
 
@@ -39,7 +39,7 @@ def render_bay_step(prefix, steps, w, h, n_ports, rule_label):
     restows_so_far = V.cumulative_restows(steps, step_idx)
     title = V.bay_title(rule_label, port_index, n_ports, restows_so_far)
     st.plotly_chart(V.bay_figure(stacks, h, n_ports, title, restowed, loaded), width="stretch", key=f"{prefix}_bay_chart_{step_idx}")
-    st.caption("Farbe = Zielhafen (dunkel = naechster Hafen auf der Route, hell = spaeter), Zahl = Zielhafen. Oranger Rand = gerade umgesetzt (Restow), gruener Rand = gerade neu geladen.")
+    st.caption("Farbe = Zielhafen (dunkel = nächster Hafen auf der Route, hell = später), Zahl = Zielhafen. Oranger Rand = gerade umgesetzt (Restow), grüner Rand = gerade neu geladen.")
 
 
 def render_rule_panel(prefix, rule, loads, w, h, n_ports):
@@ -50,20 +50,20 @@ def render_rule_panel(prefix, rule, loads, w, h, n_ports):
         st.metric("Restows (diese Route)", result["restows"])
         render_bay_step(prefix, result["steps"], w, h, n_ports, C.RULE_LABELS[rule])
     except R.Infeasible:
-        st.warning("⚠️ Diese Bucht-Groesse reicht fuer den Verkehr dieser Route nicht (Kapazitaet W x H zu klein) - unabhaengig von der Regel.")
+        st.warning("⚠️ Diese Bucht-Größe reicht für den Verkehr dieser Route nicht (Kapazität W x H zu klein) - unabhängig von der Regel.")
 
 
 def render_exact_panel(loads, h, n_ports, curve, static_bound_value, dyn_min, current_w):
     """Suchtabelle W -> Restows (Regel sortiert), Patience-Grenze als lockere Referenz, echtes Minimum."""
     st.markdown(
-        "Sucht das kleinste W, ab dem die **zielhafen-sortierte Regel** ueber die ganze Route **0 Restows** erreicht - kein eigener Loeser, dieselbe Simulation nur wiederholt fuer "
-        "W = 1, 2, 3, ... Die klassische Patience-Sorting-Formel (laengste streng steigende Teilfolge der Ladereihenfolge) ist eine sichere, aber SEHR lockere obere Schranke: sie "
+        "Sucht das kleinste W, ab dem die **zielhafen-sortierte Regel** über die ganze Route **0 Restows** erreicht - kein eigener Löser, dieselbe Simulation nur wiederholt für "
+        "W = 1, 2, 3, ... Die klassische Patience-Sorting-Formel (längste streng steigende Teilfolge der Ladereihenfolge) ist eine sichere, aber SEHR lockere obere Schranke: sie "
         "ignoriert, dass echtes Zwischenentladen unterwegs Platz freigibt."
     )
     if dyn_min is not None:
-        st.success(f"✅ Echtes Minimum dieser Route (Hoehe {h}): **W = {dyn_min}**. Lehrbuch-Faustregel (Patience Sorting): W = {static_bound_value} - {static_bound_value - dyn_min} Stapel mehr, als tatsaechlich noetig sind.")
+        st.success(f"✅ Echtes Minimum dieser Route (Höhe {h}): **W = {dyn_min}**. Lehrbuch-Faustregel (Patience Sorting): W = {static_bound_value} - {static_bound_value - dyn_min} Stapel mehr, als tatsächlich nötig sind.")
     else:
-        st.warning("⚠️ Kein W bis zur Sicherheitsgrenze der Suche erreicht 0 Restows bei dieser Hoehe.")
+        st.warning("⚠️ Kein W bis zur Sicherheitsgrenze der Suche erreicht 0 Restows bei dieser Höhe.")
     rows = []
     sorted_curve = curve[C.RULE_SORTIERT]
     for w, restows in enumerate(sorted_curve, start=1):
@@ -87,4 +87,4 @@ def render_comparison_tab(results, curve, static_bound_value, dyn_min, current_w
         })
     st.dataframe(pd.DataFrame(rows), width="stretch", hide_index=True)
     st.plotly_chart(V.restow_curve_figure(curve, static_bound_value, dyn_min, current_w), width="stretch", key="comparison_tab_curve_chart")
-    st.caption("Eine Route, zwei Regeln: der Unterschied ist an einer komfortabel bemessenen Bucht klein - er zeigt sich erst an der knappen Kapazitaetsgrenze (Presets \"Knapp\"/\"Sehr knapp\").")
+    st.caption("Eine Route, zwei Regeln: der Unterschied ist an einer komfortabel bemessenen Bucht klein - er zeigt sich erst an der knappen Kapazitätsgrenze (Presets \"Knapp\"/\"Sehr knapp\").")

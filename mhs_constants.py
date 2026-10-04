@@ -34,10 +34,10 @@ RULE_KEYS = (RULE_BLIND, RULE_SORTIERT)
 RULE_LABELS = {RULE_BLIND: "🙈 Blind", RULE_SORTIERT: "🧭 Zielhafen-sortiert"}
 RULE_SHORT = {RULE_BLIND: "Blind", RULE_SORTIERT: "Zielhafen-sortiert"}
 RULE_DESCRIPTIONS = {
-    RULE_BLIND: "Ignoriert die Zielhaefen und verteilt nach freiem Platz (Lastausgleich). Die Kontrast-Baseline: "
+    RULE_BLIND: "Ignoriert die Zielhäfen und verteilt nach freiem Platz (Lastausgleich). Die Kontrast-Baseline: "
                 "zeigt, was ohne Zielhafen-Bewusstsein passiert.",
-    RULE_SORTIERT: "Bevorzugt einen Stapel, dessen oberster Container ein Ziel groesser oder gleich dem neuen hat "
-                   "(die Sortierung oben = naechstes Ziel bleibt erhalten), bestfit = knappster passender Top. Kein "
+    RULE_SORTIERT: "Bevorzugt einen Stapel, dessen oberster Container ein Ziel größer oder gleich dem neuen hat "
+                   "(die Sortierung oben = nächstes Ziel bleibt erhalten), bestfit = knappster passender Top. Kein "
                    "solcher Stapel frei -> kleinste Sortierverletzung. Die operative Regel der Hauptansicht.",
 }
 EXACT_TAB_KEY = "exakt"

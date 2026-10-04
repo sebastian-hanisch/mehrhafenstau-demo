@@ -99,7 +99,7 @@ with st.sidebar:
         st.session_state["w_slider"] = w
         st.caption(f"Stapel (Breite W): {w} (bei dieser Route gibt es keinen Spielraum). Exakter Mindestbedarf: W* = {_exact_preview}.")
     h = st.slider("Höhe H", *bounds("h_slider"), key="h_slider", help="Stapelhöhe; siehe Sättigungspunkt im Kernabschnitt.")
-    volume = st.slider("Ladevolumen je Hafen", *bounds("volume_slider"), key="volume_slider", help="Erwartete Zahl neuer Container je Hafen.")
+    volume = st.slider("Ladevolumen je Hafen", *bounds("volume_slider"), key="volume_slider", help="Zahl neuer Container, die jeder Hafen außer dem letzten lädt (genau so viele; zufällig sind nur ihre Zielhäfen).")
     seed = st.number_input("Seed", *bounds("seed_input"), key="seed_input", step=1, help="Bestimmt die Ladeliste (Zielhäfen je Hafen).")
     st.button("🎲 Neue Route", width="stretch", on_click=randomize_seed, help="Würfelt einen neuen Seed für die Ladeliste.")
 
@@ -241,7 +241,7 @@ unterwegs Platz freigibt - die echte dynamische Mindestzahl liegt im Mittel nur 
 - **Nur eine Bucht**, keine Umverteilung zwischen mehreren Buchten.
 - **Restow-Wiedereinlagerung** nutzt dieselbe Regel wie reguläres Laden, keine eigene "Restow-Zielregel".
 - **Ladereihenfolge je Hafen** ist eine plausible, aber nicht die einzig mögliche Operator-Regel (absteigend nach Ziel).
-- **Kein Gewicht, keine Stabilität, keine Kranreichweite** - das ist die Domäne der Hafen-Linie-Schiffsstauplanung (`stauplanung-demo`: eine Bucht, ein Hafen, geschätzte Abfahrt).
+- **Kein Gewicht, keine Stabilität, keine Kranreichweite** - das ist die Domäne der Hafen-Linie-Schiffsstauplanung (`stauplanung-demo`: ein Bay mit Schwerpunkt und Gleichgewicht).
         """
     )
 
@@ -272,6 +272,6 @@ st.markdown("---")
 
 st.caption(
     "Diese Demo ist Teil des Portfolios von [Sebastian Hanisch](https://sebastianhanisch.net) – "
-    "Operations Research und Machine Learning. Interesse an einer maßgeschneiderten Lösung für "
-    "Ihr Unternehmen? [Kontakt aufnehmen](https://sebastianhanisch.net/kontakt.html)"
+    "Operations Research und Machine Learning ([Über mich](https://sebastianhanisch.net/ueber-mich.html)). "
+    "Mehr zum Thema: [Seefracht optimieren](https://sebastianhanisch.net/seefracht-optimierung.html)."
 )

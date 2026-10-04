@@ -23,11 +23,11 @@ def pdf_text(text):
 
 def diagnosis_text(diag):
     if diag.kind == "infeasible":
-        return "Diese Bucht-Groesse reicht fuer den Verkehr dieser Route nicht (Kapazitaet W x H zu klein) - unabhaengig von der Regel."
+        return "Diese Bucht-Größe reicht für den Verkehr dieser Route nicht (Kapazität W x H zu klein) - unabhängig von der Regel."
     if diag.kind == "too_narrow":
-        return f"Bucht zu knapp: mindestens W={diag.exact_w} noetig fuer garantiert 0 Restows (eingestellt: {diag.exact_w + diag.gap})."
+        return f"Bucht zu knapp: mindestens W={diag.exact_w} nötig für garantiert 0 Restows (eingestellt: {diag.exact_w + diag.gap})."
     if diag.kind == "at_limit":
-        return f"Genau am Limit (W={diag.exact_w}): kein Puffer, jede zusaetzliche Unregelmaessigkeit fuehrt zu Restows."
+        return f"Genau am Limit (W={diag.exact_w}): kein Puffer, jede zusätzliche Unregelmäßigkeit führt zu Restows."
     if diag.kind == "comfortable":
         return f"Komfortabel: {diag.gap} Stapel mehr als das exakte Minimum (W*={diag.exact_w}) - kein Handlungsbedarf."
     return "Kein Mindestbedarf innerhalb der Sicherheitsgrenze der Suche gefunden."
@@ -35,7 +35,7 @@ def diagnosis_text(diag):
 
 def verdict_text(v):
     if v.n == 0:
-        return "Kein Vergleich moeglich: keine Route ist fuer beide Regeln machbar."
+        return "Kein Vergleich möglich: keine Route ist für beide Regeln machbar."
     if v.kind == "better":
         return f"Zielhafen-sortiert gegen blind: im Mittel {abs(v.diff):.2f} weniger Restows je Route (Differenz {v.diff:+.2f}, Standardfehler {v.se:.2f}, n={v.n})."
     if v.kind == "worse":
@@ -90,7 +90,7 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
         pdf.set_text_color(0, 0, 0)
 
     pdf.set_font("Helvetica", "B", 16)
-    line("Mehrhafen-Stauplanung: Wie viele Stapelplaetze fuer null Restows?", 10)
+    line("Mehrhafen-Stauplanung: Wie viele Stapelplätze für null Restows?", 10)
     pdf.set_font("Helvetica", "", 9)
     pdf.set_text_color(120, 120, 120)
     line(f"Erstellt: {time.strftime('%d.%m.%Y %H:%M')}  -  sebastianhanisch.net", 6)
@@ -98,7 +98,7 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
     pdf.ln(3)
 
     heading("Route und Bucht")
-    pairs([("Haefen", str(n_ports)), ("Stapel (Breite W) / Hoehe H", f"{w} / {h}"), ("Ladevolumen je Hafen", str(volume)), ("Seed", str(seed))])
+    pairs([("Häfen", str(n_ports)), ("Stapel (Breite W) / Höhe H", f"{w} / {h}"), ("Ladevolumen je Hafen", str(volume)), ("Seed", str(seed))])
     pdf.ln(3)
 
     heading("Zusammenfassung")
@@ -111,18 +111,18 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
 
     if curve is not None:
         keep_together(90)
-        heading("Restows ueber der Stapelzahl W (Regel sortiert)")
+        heading("Restows über der Stapelzahl W (Regel sortiert)")
         rows = [[w_i, "nicht machbar" if r is None else r] for w_i, r in enumerate(curve[C.RULE_SORTIERT], start=1)]
         table(["W", "Restows"], [30, 60], rows)
-        note(f"Echtes Minimum W*={dyn_min}, Patience-Sorting-Faustregel={static_bound_value} (sicher, aber locker - Zwischenentladen schafft real zusaetzliche Kapazitaet, die die Formel ignoriert).")
+        note(f"Echtes Minimum W*={dyn_min}, Patience-Sorting-Faustregel={static_bound_value} (sicher, aber locker - Zwischenentladen schafft real zusätzliche Kapazität, die die Formel ignoriert).")
         pdf.ln(3)
 
     if sample_results is not None and verdict is not None:
         keep_together(60)
-        heading("Urteil ueber die Stichprobe")
+        heading("Urteil über die Stichprobe")
         pdf.set_font("Helvetica", "", 9)
         pdf.multi_cell(0, 5, pdf_text("- " + verdict_text(verdict)), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        note(f"Basis: {len(sample_results)} Routen (Seeds 0-{len(sample_results) - 1}, nicht der eingestellte Seed) mit den eingestellten Werten. Klar heisst: Unterschied groesser als zwei Standardfehler der gepaarten Differenz.")
+        note(f"Basis: {len(sample_results)} Routen (Seeds 0-{len(sample_results) - 1}, nicht der eingestellte Seed) mit den eingestellten Werten. Klar heißt: Unterschied größer als zwei Standardfehler der gepaarten Differenz.")
         pdf.ln(3)
 
     keep_together(70)
@@ -130,10 +130,10 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
     pdf.set_font("Helvetica", "", 9)
     for text in [
         "Route mit fester Reihenfolge; an jedem Hafen wird zuerst entladen (blockierende Container werden kurz umgesetzt = Restow), dann geladen. Der Zielhafen jedes Containers ist von Anfang an exakt bekannt.",
-        "Zielhafen-sortierte Regel: bestfit unter Stapeln, deren Sortierung (oben = naechstes Ziel) erhalten bleibt; sonst kleinste Verletzung. Blinde Regel: reiner Lastausgleich, ignoriert Ziele.",
-        "Exakter Mindestbedarf: kleinstes W mit 0 Restows fuer die sortierte Regel, per wiederholter Simulation gesucht (kein separater Loeser).",
+        "Zielhafen-sortierte Regel: bestfit unter Stapeln, deren Sortierung (oben = nächstes Ziel) erhalten bleibt; sonst kleinste Verletzung. Blinde Regel: reiner Lastausgleich, ignoriert Ziele.",
+        "Exakter Mindestbedarf: kleinstes W mit 0 Restows für die sortierte Regel, per wiederholter Simulation gesucht (kein separater Löser).",
         "Patience-Sorting-Grenze ist eine sichere, aber SEHR lockere obere Schranke - die echte dynamische Mindestzahl liegt im Mittel bei nur rund 60 % davon.",
-        "Nur eine Bucht, kein Gewicht/keine Stabilitaet (das ist die Domaene der Hafen-Linie-Schiffsstauplanung). Ladevolumen gleichverteilt ueber die Restroute, nicht abnehmend zu fernen Zielen.",
+        "Nur eine Bucht, kein Gewicht/keine Stabilität (das ist die Domäne der Hafen-Linie-Schiffsstauplanung). Ladevolumen gleichverteilt über die Restroute, nicht abnehmend zu fernen Zielen.",
     ]:
         pdf.multi_cell(0, 5, pdf_text("- " + text), new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
