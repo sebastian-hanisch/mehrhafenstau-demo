@@ -233,7 +233,7 @@ echten Kapazitätsgrenze (Presets "Knapp"/"Sehr knapp") zeigt sich ein robuster 
 
 **Der exakte Mindestbedarf und die Lehrbuch-Faustregel.** W* ist das kleinste W, für das die sortierte Regel über die ganze Route 0 Restows erreicht - per Suche live berechnet, kein separater Löser.
 Die klassische Patience-Sorting-Formel (längste streng steigende Teilfolge der Ladereihenfolge) ist eine sichere, aber SEHR lockere obere Schranke: sie ignoriert, dass echtes Zwischenentladen
-unterwegs Platz freigibt - die echte dynamische Mindestzahl liegt im Mittel nur bei rund 60 % der Faustregel.
+unterwegs Platz freigibt - die echte dynamische Mindestzahl liegt im Mittel nur bei etwa 55 bis 80 % der Faustregel (Voreinstellung 8 Häfen, H = 4, Volumen 2: 65 %; bei höheren Stapeln etwa 63 %, bei niedrigen Stapeln und hohem Volumen näher an der Faustregel).
 
 **Grenzen dieses Modells** (bewusst so gewählt, damit die Aussage ehrlich bleibt):
 

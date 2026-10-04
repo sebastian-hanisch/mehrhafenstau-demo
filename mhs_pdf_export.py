@@ -132,7 +132,7 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
         "Route mit fester Reihenfolge; an jedem Hafen wird zuerst entladen (blockierende Container werden kurz umgesetzt = Restow), dann geladen. Der Zielhafen jedes Containers ist von Anfang an exakt bekannt.",
         "Zielhafen-sortierte Regel: bestfit unter Stapeln, deren Sortierung (oben = nächstes Ziel) erhalten bleibt; sonst kleinste Verletzung. Blinde Regel: reiner Lastausgleich, ignoriert Ziele.",
         "Exakter Mindestbedarf: kleinstes W mit 0 Restows für die sortierte Regel, per wiederholter Simulation gesucht (kein separater Löser).",
-        "Patience-Sorting-Grenze ist eine sichere, aber SEHR lockere obere Schranke - die echte dynamische Mindestzahl liegt im Mittel bei nur rund 60 % davon.",
+        "Patience-Sorting-Grenze ist eine sichere, aber SEHR lockere obere Schranke - die echte dynamische Mindestzahl liegt im Mittel bei nur etwa 55 bis 80 % davon (je nach Stapelhöhe und Volumen; in der Voreinstellung 65 %).",
         "Nur eine Bucht, kein Gewicht/keine Stabilität (das ist die Domäne der Hafen-Linie-Schiffsstauplanung). Ladevolumen gleichverteilt über die Restroute, nicht abnehmend zu fernen Zielen.",
     ]:
         pdf.multi_cell(0, 5, pdf_text("- " + text), new_x=XPos.LMARGIN, new_y=YPos.NEXT)

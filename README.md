@@ -1,6 +1,6 @@
 # Mehrhafen-Stauplanung: Wie viele Stapelplätze für null Restows? – Streamlit-Demo
 
-*(noch nicht deployed)*
+**[→ Demo live ausprobieren](https://sebastianhanisch-mehrhafenstau-demo.streamlit.app/)**
 
 Interaktive Fall-Demo zur **Mehrhafen-Stauplanung** einer Reederei: ein Container, der auf ein spät auslaufendes Ziel gestapelt wird, blockiert jeden darunterliegenden Container mit einem früheren Ziel –
 beim Löschen muss er kurz umgesetzt werden (**Restow**), ein unproduktiver Kranhub extra. Die Demo beantwortet: **Wie viele Stapelplätze (Breite × Höhe) braucht eine Bucht, damit über die ganze Route
@@ -15,7 +15,7 @@ Vehikel: eine Bucht (W Stapel, Höhe H) auf einer Route mit fester Hafenreihenfo
 Ein reiner „Heuristik gegen Exakt"-Vergleich wäre bei normal bemessener Bucht **langweilig**: die zielhafen-sortierte Regel erreicht dort praktisch immer 0 Restows (100 % Nullquote im Basisfall). Die
 eigentliche Frage ist deshalb nicht „welche Regel gewinnt", sondern **wie viele Stapelplätze eine Route überhaupt für garantiert null Restows braucht** – und erst an der echten Kapazitätsgrenze zeigt
 sich der Unterschied zur blinden Regel deutlich (Nullquote 62,5 % gegen 0,0 % bei „Sehr knappe Bucht"). Überraschung: die klassische Lehrbuch-Faustregel für die Mindest-Stapelzahl (Patience Sorting)
-ist eine sichere, aber sehr lockere obere Schranke – die echte, dynamische Mindestzahl liegt im Mittel nur bei rund 60–64 % davon (siehe `seefracht-planung/messreihe_mehrhafenstau/ERGEBNIS.md`).
+ist eine sichere, aber sehr lockere obere Schranke – die echte, dynamische Mindestzahl liegt im Mittel nur bei etwa 55–80 % davon, je nach Stapelhöhe und Volumen (in der Voreinstellung 8 Häfen, H = 4, Volumen 2: 65 %; die Messreihe bei H = 6 fand 60–64 %, siehe `seefracht-planung/messreihe_mehrhafenstau/ERGEBNIS.md`).
 
 ## Modell
 
@@ -49,7 +49,7 @@ Alle Zahlen mit `python -m pytest tests/` nachvollziehbar (`test_preset_stories.
 |---|---|---|
 | Ist die sortierte Regel bei komfortabler Bucht schon fast perfekt? | Ja: 6 Häfen, 6 Stapel, Höhe 4 → 100,0 % Nullquote (blind 97,5 %) – ein reiner Regelvergleich wäre hier langweilig | `test_preset_stories.py` |
 | Öffnet sich an der Kapazitätsgrenze eine echte Lücke? | Ja: 10 Häfen, 3 Stapel (sehr knapp) → sortiert 62,5 % Nullquote, blind 0,0 % (nie null) | `test_preset_stories.py` |
-| Wie locker ist die Patience-Sorting-Faustregel? | Die echte dynamische Mindestzahl liegt im Mittel nur bei 60,2–63,9 % der statischen Grenze (6/8/10 Häfen), nie darüber (0/60 Verletzungen) | `test_exact.py::test_dynamic_minimum_never_exceeds_the_static_patience_bound_over_60_random_routes` |
+| Wie locker ist die Patience-Sorting-Faustregel? | Die echte dynamische Mindestzahl liegt im Mittel nur bei 60,2–63,9 % der statischen Grenze (6/8/10 Häfen, H = 6, Volumen 2; bei anderen Höhen und Volumen 55–82 %), nie darüber (0/60 Verletzungen) | `test_exact.py::test_dynamic_minimum_never_exceeds_the_static_patience_bound_over_60_random_routes` |
 | Hilft mehr Höhe, oder sättigt sie schnell? | 8 Häfen: nötige Stapelzahl bei H=2 → 3,83, H=4 → 3,03, ab H=6 kein weiterer Gewinn mehr (2,93 = 2,93 = 2,93 bei H=6/10/20) | `test_evaluation.py::test_height_curve_matches_direct_search_per_height` |
 | Stimmt die Patience-Sorting-Formel mit Brute Force überein? | Ja: 300 Zufallsfolgen, 0 Abweichungen | `test_exact.py::test_min_piles_patience_matches_brute_force_over_300_random_sequences` |
 | Wird jeder geladene Container genau einmal am richtigen Hafen entladen (Erhaltungssatz)? | Ja: 0 Verletzungen über 20+30 Zufallsinstanzen (Handinstanzen zusätzlich als Regressionstest) | `test_rules.py` |
