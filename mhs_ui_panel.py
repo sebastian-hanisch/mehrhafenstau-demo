@@ -19,11 +19,11 @@ def fmt_gap(gap):
 
 def render_metrics(columns, restows_sortiert, restows_blind, gap, zero_share_value):
     """Vier Kennzahlen (Plan Abschnitt 6): Restows (sortiert), Restows (blind), Abstand zum
-    Mindestbedarf (eingestelltes W minus exaktes Minimum), Nullquote (Stichprobe, Regel sortiert)."""
+    Mindestbedarf (eingestelltes W minus Mindestbedarf der Regel), Nullquote (Stichprobe, Regel sortiert)."""
     m = columns
     m[0].metric("Restows (sortiert)", fmt_restows(restows_sortiert), help="Restows der zielhafen-sortierten Regel auf der gezeigten Route bei der eingestellten Bucht-Größe.")
     m[1].metric("Restows (blind)", fmt_restows(restows_blind), help="Restows der blinden Regel (Kontrast-Baseline) auf derselben Route.")
-    m[2].metric("Abstand zum Mindestbedarf", fmt_gap(gap), help="Eingestelltes W minus exaktes Minimum W* (Regel sortiert) bei dieser Höhe/Route; negativ = zu knapp, 0 = genau am Limit.")
+    m[2].metric("Abstand zum Mindestbedarf", fmt_gap(gap), help="Eingestelltes W minus Mindestbedarf W* der sortierten Regel bei dieser Höhe/Route; negativ = zu knapp, 0 = genau am Limit.")
     zero_txt = "–" if zero_share_value is None else f"{zero_share_value * 100:.1f} %"
     m[3].metric("Nullquote (Stichprobe)", zero_txt, help=f"Anteil restow-freier Routen (Regel sortiert) unter {C.SAMPLE_INSTANCES} Stichprobenrouten mit denselben Einstellungen (nicht der gezeigte Seed).")
 
@@ -54,14 +54,14 @@ def render_rule_panel(prefix, rule, loads, w, h, n_ports):
 
 
 def render_exact_panel(loads, h, n_ports, curve, static_bound_value, dyn_min, current_w):
-    """Suchtabelle W -> Restows (Regel sortiert), Patience-Grenze als lockere Referenz, echtes Minimum."""
+    """Suchtabelle W -> Restows (Regel sortiert), Patience-Grenze als lockere Referenz, Mindestbedarf der Regel."""
     st.markdown(
         "Sucht das kleinste W, ab dem die **zielhafen-sortierte Regel** über die ganze Route **0 Restows** erreicht - kein eigener Löser, dieselbe Simulation nur wiederholt für "
         "W = 1, 2, 3, ... Die klassische Patience-Sorting-Formel (längste streng steigende Teilfolge der Ladereihenfolge) ist eine sichere, aber SEHR lockere obere Schranke: sie "
         "ignoriert, dass echtes Zwischenentladen unterwegs Platz freigibt."
     )
     if dyn_min is not None:
-        st.success(f"✅ Echtes Minimum dieser Route (Höhe {h}): **W = {dyn_min}**. Lehrbuch-Faustregel (Patience Sorting): W = {static_bound_value} - {static_bound_value - dyn_min} Stapel mehr, als tatsächlich nötig sind.")
+        st.success(f"✅ Mindestbedarf der sortierten Regel auf dieser Route (Höhe {h}): **W = {dyn_min}**. Lehrbuch-Faustregel (Patience Sorting): W = {static_bound_value} - {static_bound_value - dyn_min} Stapel mehr, als die Regel braucht.")
     else:
         st.warning("⚠️ Kein W bis zur Sicherheitsgrenze der Suche erreicht 0 Restows bei dieser Höhe.")
     rows = []

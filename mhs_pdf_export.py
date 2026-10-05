@@ -25,11 +25,11 @@ def diagnosis_text(diag):
     if diag.kind == "infeasible":
         return "Diese Bucht-Größe reicht für den Verkehr dieser Route nicht (Kapazität W x H zu klein) - unabhängig von der Regel."
     if diag.kind == "too_narrow":
-        return f"Bucht zu knapp: mindestens W={diag.exact_w} nötig für garantiert 0 Restows (eingestellt: {diag.exact_w + diag.gap})."
+        return f"Bucht zu knapp: die sortierte Regel braucht mindestens W={diag.exact_w} für 0 Restows (eingestellt: {diag.exact_w + diag.gap})."
     if diag.kind == "at_limit":
         return f"Genau am Limit (W={diag.exact_w}): kein Puffer, jede zusätzliche Unregelmäßigkeit führt zu Restows."
     if diag.kind == "comfortable":
-        return f"Komfortabel: {diag.gap} Stapel mehr als das exakte Minimum (W*={diag.exact_w}) - kein Handlungsbedarf."
+        return f"Komfortabel: {diag.gap} Stapel mehr als der Mindestbedarf der sortierten Regel (W*={diag.exact_w}) - kein Handlungsbedarf."
     return "Kein Mindestbedarf innerhalb der Sicherheitsgrenze der Suche gefunden."
 
 
@@ -46,7 +46,7 @@ def verdict_text(v):
 def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blind, diag, static_bound_value,
                      dyn_min, curve=None, sample_results=None, verdict=None, compress=True):
     """Ergebnis der aktuellen Einstellung als PDF: Route, Restows je Regel, Diagnose, Patience-Grenze
-    gegen echtes Minimum, Restow-ueber-W-Kurve, Urteil ueber die Stichprobe, Hinweise zum Modell."""
+    gegen den Mindestbedarf der Regel, Restow-ueber-W-Kurve, Urteil ueber die Stichprobe, Hinweise zum Modell."""
     from fpdf import FPDF
     from fpdf.enums import XPos, YPos
 
@@ -105,7 +105,7 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
     note(diagnosis_text(diag), 9)
     pairs([("Restows (sortiert)", "nicht machbar" if restows_sortiert is None else str(restows_sortiert)),
            ("Restows (blind)", "nicht machbar" if restows_blind is None else str(restows_blind)),
-           ("Echtes Minimum W*", "-" if dyn_min is None else str(dyn_min)),
+           ("Mindestbedarf der Regel W*", "-" if dyn_min is None else str(dyn_min)),
            ("Patience-Grenze (statisch, locker)", str(static_bound_value))])
     pdf.ln(3)
 
@@ -114,7 +114,7 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
         heading("Restows über der Stapelzahl W (Regel sortiert)")
         rows = [[w_i, "nicht machbar" if r is None else r] for w_i, r in enumerate(curve[C.RULE_SORTIERT], start=1)]
         table(["W", "Restows"], [30, 60], rows)
-        note(f"Echtes Minimum W*={dyn_min}, Patience-Sorting-Faustregel={static_bound_value} (sicher, aber locker - Zwischenentladen schafft real zusätzliche Kapazität, die die Formel ignoriert).")
+        note(f"Mindestbedarf der Regel W*={dyn_min}, Patience-Sorting-Faustregel={static_bound_value} (sicher, aber locker - Zwischenentladen schafft real zusätzliche Kapazität, die die Formel ignoriert).")
         pdf.ln(3)
 
     if sample_results is not None and verdict is not None:
@@ -131,8 +131,8 @@ def generate_mhs_pdf(n_ports, w, h, volume, seed, restows_sortiert, restows_blin
     for text in [
         "Route mit fester Reihenfolge; an jedem Hafen wird zuerst entladen (blockierende Container werden kurz umgesetzt = Restow), dann geladen. Der Zielhafen jedes Containers ist von Anfang an exakt bekannt.",
         "Zielhafen-sortierte Regel: bestfit unter Stapeln, deren Sortierung (oben = nächstes Ziel) erhalten bleibt; sonst kleinste Verletzung. Blinde Regel: reiner Lastausgleich, ignoriert Ziele.",
-        "Exakter Mindestbedarf: kleinstes W mit 0 Restows für die sortierte Regel, per wiederholter Simulation gesucht (kein separater Löser).",
-        "Patience-Sorting-Grenze ist eine sichere, aber SEHR lockere obere Schranke - die echte dynamische Mindestzahl liegt im Mittel bei nur etwa 55 bis 80 % davon (je nach Stapelhöhe und Volumen; in der Voreinstellung 65 %).",
+        "Mindestbedarf der Regel: kleinstes W mit 0 Restows für die sortierte Regel, per wiederholter Simulation gesucht (kein separater Löser). Ein anderes Stapelverfahren kann in einzelnen Routen mit weniger Stapeln auskommen.",
+        "Patience-Sorting-Grenze ist eine sichere, aber SEHR lockere obere Schranke - der dynamische Mindestbedarf der Regel liegt im Mittel bei nur etwa 55 bis 80 % davon (je nach Stapelhöhe und Volumen; in der Voreinstellung 65 %).",
         "Nur eine Bucht, kein Gewicht/keine Stabilität (das ist die Domäne der Hafen-Linie-Schiffsstauplanung). Ladevolumen gleichverteilt über die Restroute, nicht abnehmend zu fernen Zielen.",
     ]:
         pdf.multi_cell(0, 5, pdf_text("- " + text), new_x=XPos.LMARGIN, new_y=YPos.NEXT)

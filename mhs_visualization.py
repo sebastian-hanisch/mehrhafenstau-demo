@@ -30,7 +30,7 @@ def _blend(f):
 # ---------------------------------------------------------------------------------------------------
 def restow_curve_figure(curve, static_bound_value, dyn_min, current_w):
     """curve: {'blind': [...], 'sortiert': [...]} Restows je W=1..len; None wo infeasible. Gestrichelte
-    graue Marke bei der Patience-Grenze, gestrichelte gruene Marke beim echten Minimum, eingestelltes W
+    graue Marke bei der Patience-Grenze, gestrichelte gruene Marke beim Mindestbedarf der Regel, eingestelltes W
     als roter Punkt auf der sortierten Kurve."""
     import plotly.graph_objects as go
 
@@ -50,7 +50,7 @@ def restow_curve_figure(curve, static_bound_value, dyn_min, current_w):
                       annotation_text="Patience-Grenze (statisch)", annotation_position="top", annotation_font=dict(size=11))
     if dyn_min is not None:
         fig.add_vline(x=dyn_min, line=dict(color=C.DYN_MIN_COLOR, width=2, dash="dash"),
-                      annotation_text="echtes Minimum", annotation_position="bottom",
+                      annotation_text="Mindestbedarf der Regel", annotation_position="bottom",
                       annotation_font=dict(size=11, color=C.DYN_MIN_COLOR))
     sorted_curve = curve[C.RULE_SORTIERT]
     cur_y = sorted_curve[current_w - 1] if 0 < current_w <= len(sorted_curve) else None

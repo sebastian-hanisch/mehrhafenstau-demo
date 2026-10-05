@@ -33,7 +33,8 @@ def static_bound(loads):
 
 
 def exact_min(loads, h, w_max=C.W_SEARCH_MAX):
-    """Exakter dynamischer Mindestbedarf (kleinstes W mit 0 Restows, Regel sortiert) dieser Route."""
+    """Dynamischer Mindestbedarf der sortierten Regel (kleinstes W mit 0 Restows) dieser Route - nicht das Minimum
+    ueber alle denkbaren Stapelverfahren (siehe tests/test_oracle_stacking.py)."""
     return min_stacks_for_zero_restow(loads, h, w_max)
 
 
@@ -62,7 +63,7 @@ def restow_curve(loads, h, w_max):
 
 
 def height_curve(n_ports, volume, h_values, seeds, w_max=C.W_SEARCH_MAX):
-    """Mittlere exakte Mindest-Stapelzahl (Regel sortiert) je Hoehe H, gemittelt ueber `seeds`."""
+    """Mittlerer Mindestbedarf an Stapeln (Regel sortiert) je Hoehe H, gemittelt ueber `seeds`."""
     out = {}
     for h in h_values:
         needed = []
@@ -82,7 +83,7 @@ def height_curve(n_ports, volume, h_values, seeds, w_max=C.W_SEARCH_MAX):
 class RouteResult:
     seed: int
     restows: dict           # rule -> int oder None (infeasible bei diesem W)
-    exact_w: Optional[int]   # exakter Mindestbedarf dieser Route bei dieser Hoehe (unabhaengig von W)
+    exact_w: Optional[int]   # Mindestbedarf der Regel auf dieser Route bei dieser Hoehe (unabhaengig von W)
     static_w: int            # Patience-Grenze dieser Route
 
 
@@ -158,7 +159,7 @@ def verdict(results):
 @dataclass(frozen=True)
 class Diagnosis:
     kind: str            # "infeasible" | "too_narrow" | "at_limit" | "comfortable"
-    gap: Optional[int]    # eingestelltes W minus exaktes Minimum (negativ = zu knapp)
+    gap: Optional[int]    # eingestelltes W minus Mindestbedarf der Regel (negativ = zu knapp)
     exact_w: Optional[int]
 
 

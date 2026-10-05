@@ -1,4 +1,4 @@
-"""Exakter Mindestbedarf und Patience-Sorting-Referenz.
+"""Mindestbedarf der sortierten Regel und Patience-Sorting-Referenz.
 
 Unveraendert aus seefracht-planung/messreihe_mehrhafenstau/mehrhafenstau.py uebernommen
 (min_piles_patience, flatten_load_order, min_stacks_for_zero_restow) - min_piles_patience gegen Brute

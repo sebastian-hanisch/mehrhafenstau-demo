@@ -93,11 +93,11 @@ with st.sidebar:
     _exact_preview = E.exact_min(_loads_preview, int(_h_now))
     if _w_hi > _w_lo:
         w = st.slider("Stapel (Breite W)", int(_w_lo), int(_w_hi), key="w_slider",
-                      help=f"Grenze berechnet (Patience-Grenze der Route + Puffer). Exakter Mindestbedarf bei dieser Höhe/Route: W* = {_exact_preview}.")
+                      help=f"Grenze berechnet (Patience-Grenze der Route + Puffer). Mindestbedarf der sortierten Regel bei dieser Höhe/Route: W* = {_exact_preview}.")
     else:
         w = _w_lo
         st.session_state["w_slider"] = w
-        st.caption(f"Stapel (Breite W): {w} (bei dieser Route gibt es keinen Spielraum). Exakter Mindestbedarf: W* = {_exact_preview}.")
+        st.caption(f"Stapel (Breite W): {w} (bei dieser Route gibt es keinen Spielraum). Mindestbedarf der sortierten Regel: W* = {_exact_preview}.")
     h = st.slider("Höhe H", *bounds("h_slider"), key="h_slider", help="Stapelhöhe; siehe Sättigungspunkt im Kernabschnitt.")
     volume = st.slider("Ladevolumen je Hafen", *bounds("volume_slider"), key="volume_slider", help="Zahl neuer Container, die jeder Hafen außer dem letzten lädt (genau so viele; zufällig sind nur ihre Zielhäfen).")
     seed = st.number_input("Seed", *bounds("seed_input"), key="seed_input", step=1, help="Bestimmt die Ladeliste (Zielhäfen je Hafen).")
@@ -141,13 +141,13 @@ metric_rows = [st.columns(2), st.columns(2)]
 render_metrics(metric_rows[0] + metric_rows[1], restows_sortiert, restows_blind, diag.gap, zero_share_sample)
 
 if diag.kind == "infeasible":
-    st.error(f"⛔ Diese Bucht-Größe reicht für den Verkehr dieser Route nicht (Kapazität W×H={w * h} zu klein) - unabhängig von der Regel. Mindestens W={dyn_min} nötig, wenn 0 Restows das Ziel ist.")
+    st.error(f"⛔ Diese Bucht-Größe reicht für den Verkehr dieser Route nicht (Kapazität W×H={w * h} zu klein) - unabhängig von der Regel. Die sortierte Regel braucht mindestens W={dyn_min}, um 0 Restows zu erreichen.")
 elif diag.kind == "too_narrow":
-    st.warning(f"⚠️ Bucht zu knapp: mindestens **W={diag.exact_w}** nötig für garantiert 0 Restows (eingestellt: W={w}, {abs(diag.gap)} zu wenig).")
+    st.warning(f"⚠️ Bucht zu knapp: die sortierte Regel braucht mindestens **W={diag.exact_w}** für 0 Restows (eingestellt: W={w}, {abs(diag.gap)} zu wenig).")
 elif diag.kind == "at_limit":
     st.info(f"ℹ️ Genau am Limit (**W={diag.exact_w}**): kein Puffer, jede zusätzliche Unregelmäßigkeit führt sofort zu Restows.")
 elif diag.kind == "comfortable":
-    st.success(f"✅ Komfortabel: **{diag.gap} Stapel mehr** als das exakte Minimum (W*={diag.exact_w}) - kein Handlungsbedarf.")
+    st.success(f"✅ Komfortabel: **{diag.gap} Stapel mehr** als der Mindestbedarf der sortierten Regel (W*={diag.exact_w}) - kein Handlungsbedarf.")
 else:
     st.info("ℹ️ Kein Mindestbedarf innerhalb der Sicherheitsgrenze der Suche gefunden.")
 
@@ -167,8 +167,8 @@ st.markdown("---")
 st.markdown("### 📐 Wie viele Stapelplätze braucht die Bucht?")
 st.markdown(
     """
-Kernfrage dieser Demo: bei welcher Bucht-Größe kommt die Route garantiert ohne Restows aus - und wie eng ist die Lehrbuch-Faustregel (Patience Sorting) an dieser echten, dynamischen Grenze dran?
-Links: Restows über der Stapelzahl W für **Ihre Route**, beide Regeln, mit der Patience-Grenze (grau gestrichelt) und dem echten Minimum (grün gestrichelt). Rechts: wie viele Stapel bei welcher
+Kernfrage dieser Demo: bei welcher Bucht-Größe kommt die Route mit der zielhafen-sortierten Regel ohne Restows aus - und wie eng ist die Lehrbuch-Faustregel (Patience Sorting) an dieser dynamischen Grenze dran?
+Links: Restows über der Stapelzahl W für **Ihre Route**, beide Regeln, mit der Patience-Grenze (grau gestrichelt) und dem Mindestbedarf der Regel (grün gestrichelt). Rechts: wie viele Stapel bei welcher
 Höhe im Mittel mindestens nötig sind, bei Ihren Häfen/Ihrem Ladevolumen - der Sättigungspunkt, ab dem mehr Höhe nichts mehr bringt.
 """
 )
@@ -231,9 +231,11 @@ dann geladen (neue Container mit Ziel > dieser Hafen, absteigend nach Ziel). And
 erhalten), bestfit unter den gültigen Stapeln. Bei komfortabel bemessener Bucht ist sie fast immer perfekt (0 Restows) - ein reiner Vergleich gegen die blinde Regel wäre dort langweilig. Erst an der
 echten Kapazitätsgrenze (Presets "Knapp"/"Sehr knapp") zeigt sich ein robuster Unterschied.
 
-**Der exakte Mindestbedarf und die Lehrbuch-Faustregel.** W* ist das kleinste W, für das die sortierte Regel über die ganze Route 0 Restows erreicht - per Suche live berechnet, kein separater Löser.
+**Der Mindestbedarf der Regel und die Lehrbuch-Faustregel.** W* ist das kleinste W, für das die sortierte Regel über die ganze Route 0 Restows erreicht - per Suche live berechnet, kein separater Löser.
+Das ist der Bedarf **dieser Regel**, nicht das Minimum über alle denkbaren Stapelverfahren: eine Vollaufzählung aller Platzierungen fand in 12 von 260 Zufallsrouten (4-7 Häfen, Volumen 1-3, Höhe 2-5) ein
+Verfahren mit weniger Stapeln (Beispiel: Ladeliste [[2,4],[3,2],[5,3],[4,5],[5,5],[]] bei Höhe 4 - die Regel braucht W=3, mit zwei Stapeln geht es per Hand: 4 und 2 getrennt auf zwei Stapel legen).
 Die klassische Patience-Sorting-Formel (längste streng steigende Teilfolge der Ladereihenfolge) ist eine sichere, aber SEHR lockere obere Schranke: sie ignoriert, dass echtes Zwischenentladen
-unterwegs Platz freigibt - die echte dynamische Mindestzahl liegt im Mittel nur bei etwa 55 bis 80 % der Faustregel (Voreinstellung 8 Häfen, H = 4, Volumen 2: 65 %; bei höheren Stapeln etwa 63 %, bei niedrigen Stapeln und hohem Volumen näher an der Faustregel).
+unterwegs Platz freigibt - der dynamische Mindestbedarf der Regel liegt im Mittel nur bei etwa 55 bis 80 % der Faustregel (Voreinstellung 8 Häfen, H = 4, Volumen 2: 65 %; bei höheren Stapeln etwa 63 %, bei niedrigen Stapeln und hohem Volumen näher an der Faustregel).
 
 **Grenzen dieses Modells** (bewusst so gewählt, damit die Aussage ehrlich bleibt):
 
@@ -255,7 +257,8 @@ with st.expander("📐 Mathematische Formulierung"):
 **Restow.** Beim Entladen an Hafen $p$: für jeden Stapel wird jeder Container mit Ziel $> p$, der über einem Container mit Ziel $= p$ liegt, kurz umgesetzt (1 Ereignis) und danach per Platzierungsregel
 neu eingelagert.
 
-**Exakter Mindestbedarf.** $W^\ast(H) = \min\{W : \text{zielhafen-sortierte Regel erreicht über die ganze Route 0 Restows}\}$ - per linearer Suche über $W = 1, 2, \dots$ bestimmt.
+**Mindestbedarf der Regel.** $W^\ast(H) = \min\{W : \text{zielhafen-sortierte Regel erreicht über die ganze Route 0 Restows}\}$ - per linearer Suche über $W = 1, 2, \dots$ bestimmt. Eine obere Schranke für den
+Bedarf des besten denkbaren Verfahrens, nicht dessen Wert.
 
 **Statische Referenz (Patience Sorting).** Ohne Zwischenentladen, bei unbegrenzter Höhe, ist die minimale Stapelzahl gleich der Länge der längsten streng steigenden Teilfolge der tatsächlichen
 Ladereihenfolge (klassisches Patience-Sorting-Resultat) - beweisbar eine obere Schranke für $W^\ast(\infty)$, da echtes Zwischenentladen nie mehr Stapel braucht als der statische Fall.

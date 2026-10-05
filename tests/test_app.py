@@ -188,7 +188,7 @@ def test_extreme_combination_runs_without_exception():
 def test_message_too_narrow_when_w_below_exact_minimum():
     at = fresh(np="10", h="4", vol="2", seed="41", w="3")   # W*=4 bei diesem Seed, W=3 ist feasible aber zu knapp
     msg = message(at, "Bucht zu knapp")
-    assert msg is not None and "nötig" in msg
+    assert msg is not None and "sortierte Regel braucht mindestens" in msg
 
 
 def test_message_at_limit_when_w_equals_exact_minimum():

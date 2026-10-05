@@ -28,7 +28,7 @@ POPULATION_INSTANCES = 40    # Instanzen fuer die Preset-Abnahme (Plan Abschnitt
                               # Stichprobengroesse von messreihe_mehrhafenstau/sweep.py range(40))
 VERDICT_Z = 2.0               # klar ab mehr als VERDICT_Z Standardfehlern der gepaarten Differenz
 
-# --- Bausteine (Plan Abschnitt 3): zwei Regeln plus eine abgeleitete exakte Groesse --------------------
+# --- Bausteine (Plan Abschnitt 3): zwei Regeln plus eine abgeleitete Groesse (Mindestbedarf der sortierten Regel) --------------------
 RULE_BLIND, RULE_SORTIERT = "blind", "sortiert"
 RULE_KEYS = (RULE_BLIND, RULE_SORTIERT)
 RULE_LABELS = {RULE_BLIND: "🙈 Blind", RULE_SORTIERT: "🧭 Zielhafen-sortiert"}
@@ -41,13 +41,13 @@ RULE_DESCRIPTIONS = {
                    "solcher Stapel frei -> kleinste Sortierverletzung. Die operative Regel der Hauptansicht.",
 }
 EXACT_TAB_KEY = "exakt"
-EXACT_TAB_LABEL = "🎯 Exakter Mindestbedarf"
+EXACT_TAB_LABEL = "🎯 Mindestbedarf der Regel"
 COMPARISON_TAB_LABEL = "📊 Vergleich"
 
 # --- Darstellung ----------------------------------------------------------------------------------------
 RULE_COLORS = {RULE_BLIND: "#8a94a3", RULE_SORTIERT: "#2a6fb0"}
 STATIC_BOUND_COLOR = "#9aa5b4"    # Patience-Grenze (grau gestrichelt)
-DYN_MIN_COLOR = "#2e7d4f"          # echtes Minimum (gruen gestrichelt)
+DYN_MIN_COLOR = "#2e7d4f"          # Mindestbedarf der Regel (gruen gestrichelt)
 CURRENT_W_COLOR = "#c0392b"
 MARKER_LINE_COLOR = "#808895"
 
